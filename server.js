@@ -11,6 +11,7 @@
  *   DELETE /mcp ends the session
  *   POST /admin/reset   the non-MCP demo reset endpoint DemoReset calls (callout:Cloudera_Admin/admin/reset)
  *   GET  /health
+ *   GET  /      static landing page (plain HTML, no scripts, no external requests)
  * Tool get-credit-decision answers for KCB-00417, KCB-00418, KCB-00419 from ./payloads; any other borrower
  * returns an MCP tool error (isError: true). Responses are plain JSON (no SSE), which the MCP client accepts.
  */
@@ -29,6 +30,26 @@ for (const f of fs.readdirSync(path.join(__dirname, 'payloads'))) {
     PAYLOADS[p.borrower_id] = p;
   }
 }
+const LANDING = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel mock MCP server</title>
+<style>body{font-family:system-ui,sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.5;color:#222}code{background:#f2f2f2;padding:0 .25rem}</style>
+</head>
+<body>
+<h1>Kestrel mock MCP server</h1>
+<p><strong>This is a mock.</strong> Every response uses synthetic data for the Kestrel Commercial Bank demo. Kestrel Commercial Bank is a fictional bank.</p>
+<p>Hello, Cloudera team. This stands in for the real credit decision service until your endpoint is ready.</p>
+<ul>
+<li>MCP tool: <code>get-credit-decision</code> (MCP endpoint <code>/mcp</code>)</li>
+<li>Hero borrowers: <code>KCB-00417</code>, <code>KCB-00418</code>, <code>KCB-00419</code></li>
+<li>Health check: <code>/health</code></li>
+</ul>
+</body>
+</html>
+`;
 const sessions = new Set();
 const resets = [];
 
@@ -97,6 +118,11 @@ const server = http.createServer((req, res) => {
   let raw = '';
   req.on('data', (c) => { raw += c; });
   req.on('end', () => {
+    if (url.pathname === '/') {
+      if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'GET only' });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': Buffer.byteLength(LANDING), 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'" });
+      return res.end(req.method === 'HEAD' ? undefined : LANDING);
+    }
     if (url.pathname === '/health') return json(res, 200, { ok: true, protocol: PROTOCOL, tools: [TOOL.name], borrowers: Object.keys(PAYLOADS), resets: resets.length });
     if (url.pathname === '/admin/reset') {
       if (req.method !== 'POST') return json(res, 405, { error: 'POST only' });
