@@ -1,0 +1,44 @@
+{
+  "name": "get-credit-decision",
+  "title": "Get credit decision",
+  "description": "Runs Kestrel credit policy and, if policy does not decide, the credit model, against the bank's enterprise data platform (24-month ledger, servicing history, affiliate joins). Returns the decision, policy result and rule, PD score and band, ranked drivers, ratios, KYC/bureau/screening checks, conditions and lineage for one borrower and one facility request. Read-only; writes nothing.",
+  "inputSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "borrower_id",
+      "opportunity_amount",
+      "loan_product",
+      "term_months"
+    ],
+    "properties": {
+      "borrower_id": {
+        "type": "string",
+        "pattern": "^KCB-[0-9]{5}$",
+        "description": "Kestrel borrower id, the Account's Borrower_ID__c (e.g. KCB-00417)."
+      },
+      "opportunity_amount": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "description": "Requested facility amount in USD (Opportunity.Amount)."
+      },
+      "loan_product": {
+        "type": "string",
+        "enum": [
+          "Equipment Term Loan",
+          "Working Capital Line",
+          "Practice Acquisition Loan",
+          "CRE Term Loan",
+          "SBA 7(a)"
+        ],
+        "description": "Opportunity.Loan_Product__c."
+      },
+      "term_months": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 999,
+        "description": "Opportunity.Term_Months__c."
+      }
+    }
+  }
+}

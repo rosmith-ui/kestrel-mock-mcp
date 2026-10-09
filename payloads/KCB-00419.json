@@ -1,0 +1,27 @@
+{
+  "borrower_id": "KCB-00419",
+  "decision": "DECLINE",
+  "policy": {
+    "result": "decline",
+    "rule": "CHARGE_OFF_36M",
+    "value": 20,
+    "threshold": 36
+  },
+  "score": null,
+  "drivers": [],
+  "ratios": {
+    "global_dscr": null,
+    "ltv": null,
+    "debt_to_ebitda": null
+  },
+  "checks": {
+    "bureau": "not_run",
+    "kyc": "current",
+    "screening": "clear"
+  },
+  "conditions": [],
+  "lineage": {
+    "atlas_entity": "kcb.credit_decision.20261008.00419",
+    "as_of": "2026-10-08T21:44:00Z"
+  }
+}

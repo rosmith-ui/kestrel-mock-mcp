@@ -1,0 +1,54 @@
+{
+  "borrower_id": "KCB-00417",
+  "decision": "CONDITIONAL_APPROVE",
+  "policy": {
+    "result": "pass_with_condition",
+    "rule": "DSCR_FLOOR",
+    "value": 1.31,
+    "threshold": 1.25
+  },
+  "score": {
+    "pd_12m": 0.034,
+    "band": "B",
+    "model": "nexus-cml-2.3"
+  },
+  "drivers": [
+    {
+      "feature": "cash_flow_volatility",
+      "value": "0.42",
+      "direction": "adverse"
+    },
+    {
+      "feature": "deposit_concentration_top3",
+      "value": "0.61",
+      "direction": "adverse"
+    },
+    {
+      "feature": "guarantor_fico_band",
+      "value": "760+",
+      "direction": "favorable"
+    }
+  ],
+  "ratios": {
+    "global_dscr": 1.31,
+    "ltv": 0.68,
+    "debt_to_ebitda": 3.2
+  },
+  "checks": {
+    "bureau": "clear",
+    "kyc": "current",
+    "screening": "clear"
+  },
+  "conditions": [
+    {
+      "text": "Quarterly cash flow covenant, DSCR >= 1.20"
+    },
+    {
+      "text": "Assignment of top 2 receivable contracts"
+    }
+  ],
+  "lineage": {
+    "atlas_entity": "kcb.credit_decision.20261008.00417",
+    "as_of": "2026-10-08T21:40:00Z"
+  }
+}
